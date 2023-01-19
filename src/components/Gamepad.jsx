@@ -7,6 +7,7 @@ import Joystick from "./Joystick";
 const Gamepad = ({}) => {
   const socket = io("ws://localhost:8000");
   const [controller, setController] = useState("Ingen kontroller hittades!");
+  const [state, setState] = useState({ base: 90, lowerArm: 90 });
   const [leftStick, setLeftStick] = useState({
     type: "left",
     horizontal: 0,
@@ -42,7 +43,7 @@ const Gamepad = ({}) => {
         strongMagnitude: 1,
       };
       joypad.set({
-        axisMovementThreshold: 0.3,
+        axisMovementThreshold: 0.1,
       });
 
       joypad.vibrate(gamepad, options);
@@ -66,29 +67,6 @@ const Gamepad = ({}) => {
       const { axis, axisMovementValue, stickMoved } = e.detail;
 
       sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue });
-      /* switch (stickMoved) {
-        case "left_stick":
-          if (axis === 0) {
-            setLeftStick({ ...leftStick, horizontal: axisMovementValue });
-          } else if (axis === 1) {
-            setLeftStick({ ...leftStick, vertical: axisMovementValue });
-          }
-          sendToSocket(leftStick);
-          break;
-
-        case "right_stick":
-          if (axis === 3) {
-            setRightStick({ ...rightStick, horizontal: axisMovementValue });
-          } else if (axis === 4) {
-            setRightStick({ ...rightStick, vertical: axisMovementValue });
-          }
-          sendToSocket(rightStick);
-          break;
-      }
-
-      console.log(
-        `Type: ${leftStick.horizontal} | Horizontal: ${leftStick.horizontal} | Vertical: ${leftStick.vertical}`
-      ); */
     });
   }, []);
 
@@ -96,9 +74,15 @@ const Gamepad = ({}) => {
     socket.emit("input", data);
   };
 
+  socket.on("state", (currentState) => {
+    setState(currentState);
+  });
+
   return (
     <>
       <Box>{`Använder kontroller: ${controller}`}</Box>
+      <Box>{`Basen: [${state.base}]`}</Box>
+      <Box>{`Lägre arm: [${state.lowerArm}]`}</Box>
 
       {controller !== "Ingen kontroller hittades!" && (
         <Snackbar
