@@ -3,9 +3,10 @@ import {
   Snackbar,
   Alert,
   Paper,
-  breadcrumbsClasses,
   Container,
   Stack,
+  Skeleton,
+  Card,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import Grid2 from "@mui/material/Unstable_Grid2"; // Grid version 2
@@ -13,6 +14,7 @@ import "joypad.js"; // ES6
 import { useState, useEffect } from "react";
 import { io } from "socket.io-client";
 import Joystick from "./Joystick";
+import InfoCard from "./InfoCard";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: "#1A2027",
@@ -22,12 +24,18 @@ const Item = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }));
 
-const Gamepad = ({}) => {
+const Gamepad = ({ handler }) => {
   const socket = io("ws://localhost:8000");
   const [controller, setController] = useState("Ingen kontroller ansluten!");
-  const [state, setState] = useState({ base: 90, lowerArm: 90 });
+  const [state, setState] = useState({
+    base: 90,
+    lowerArm: 90,
+    upperArm: 90,
+    claw: 90,
+  });
   const [axes, setAxes] = useState([0, 0, 0, 0]);
   const [open, setOpen] = useState(false);
+  const [connected, setConnected] = useState(false);
 
   const handleClick = () => {
     setOpen(true);
@@ -46,8 +54,8 @@ const Gamepad = ({}) => {
       const { gamepad } = e;
       const { id } = e.gamepad;
       const options = {
-        startDelay: 100,
-        duration: 500,
+        startDelay: 50,
+        duration: 450,
         weakMagnitude: 1,
         strongMagnitude: 1,
       };
@@ -92,39 +100,70 @@ const Gamepad = ({}) => {
 
   useEffect(() => {
     socket.on("state", (currentState) => {
-      console.log(
-        `Base: ${currentState.base} | Lower arm: ${currentState.lowerArm}`
-      );
       setState(currentState);
     });
   }, []);
 
+  socket.on("connect", () => {
+    setConnected(true);
+  })
+
+  socket.on("disconnect", () => {
+    setConnected(false);
+  })
+
   return (
-    <>
-      <Box>{`Använder kontroller: ${controller}`}</Box>
-      <Box>{`Basen: [${state.base}]`}</Box>
-      <Box>{`Lägre arm: [${state.lowerArm}]`}</Box>
+    <>  
+      {connected ? (
+          <Stack direction="row" justifyContent="space-between">
+            <Box sx={{ minWidth: 275 }}>
+              <Card variant="elevation"><InfoCard value={state.base} title="Basen"/></Card>
+            </Box>
+            <Box sx={{ minWidth: 275 }}>
+              <Card variant="elevation"><InfoCard value={state.lowerArm} title="Nedre Armen"/></Card>
+            </Box>
+            <Box sx={{ minWidth: 275 }}>
+              <Card variant="elevation"><InfoCard value={state.upperArm} title="Övre Armen"/></Card>
+            </Box>
+            <Box sx={{ minWidth: 275 }}>
+              <Card variant="elevation" ><InfoCard value={state.claw} title="Klon"/></Card>
+            </Box>
+          </Stack>
+      ) : (
+          <Stack direction="row" justifyContent="space-between">
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={275}
+              height={150}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={275}
+              height={150}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={275}
+              height={150}
+            />
+            <Skeleton
+              animation="wave"
+              variant="rectangular"
+              width={275}
+              height={150}
+            />
+          </Stack>
+      )}
+
       <Container>
-        <Stack direction="row" justifyContent="space-between">
+        <Stack direction="row" justifyContent="space-evenly" pt="50pt">
           <Joystick x={axes[0]} y={axes[1]} title="Vänster Joystick" />
           <Joystick x={axes[2]} y={axes[3]} title="Höger Joystick" />
         </Stack>
       </Container>
-
-      <Grid2 container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid2 xs={6}>
-          <Item>1</Item>
-        </Grid2>
-        <Grid2 xs={6}>
-          <Item>2</Item>
-        </Grid2>
-        <Grid2 xs={6}>
-          <Item>3</Item>
-        </Grid2>
-        <Grid2 xs={6}>
-          <Item>4</Item>
-        </Grid2>
-      </Grid2>
 
       {controller !== "Ingen kontroller hittades!" && (
         <Snackbar

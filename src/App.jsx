@@ -4,25 +4,24 @@ import Header from "./components/Header";
 import Chat from "./components/Chat";
 import { ButtonGroup, Button, Box, Typography } from "@mui/material";
 import Gamepad from "./components/Gamepad";
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 function App() {
   return (
-    <>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
       <Header />
       <Box mt={5}>
-        <Typography
-          component="h1"
-          variant="h2"
-          align="center"
-          color="info.main"
-          fontWeight={"bold"}
-          gutterBottom
-        >
-          Grunka Visualizer
-        </Typography>
         <Gamepad />
       </Box>
-    </>
+    </ThemeProvider>
   );
 }
 

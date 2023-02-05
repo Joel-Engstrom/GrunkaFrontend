@@ -14,7 +14,7 @@ const Joystick = ({ x, y, title }) => {
         component="h1"
         variant="h6"
         align="center"
-        color="info.main"
+        color="text.secondary"
         fontWeight={"bold"}
       >
         {title}
@@ -24,7 +24,7 @@ const Joystick = ({ x, y, title }) => {
         height={100}
         sx={{
           borderRadius: "100%",
-          backgroundColor: "darkcyan",
+          backgroundColor: "action.hover",
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
@@ -35,7 +35,7 @@ const Joystick = ({ x, y, title }) => {
           height={20}
           sx={{
             borderRadius: "100%",
-            backgroundColor: "primary.dark",
+            backgroundColor: "orangered",
             position: "absolute",
             transform: `translateX(${x * 40}px) translateY(${y * 40}px)`,
             transition: "transform 0.1s ease-in-out",
