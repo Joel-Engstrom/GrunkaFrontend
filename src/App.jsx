@@ -7,6 +7,7 @@ import Gamepad from "./components/Gamepad";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { SocketProvider } from "./components/SocketProvider";
+import ConnectedContext from "./components/ConnectedContext";
 
 const darkTheme = createTheme({
   palette: {
@@ -14,17 +15,20 @@ const darkTheme = createTheme({
   },
 });
 
-
 function App() {
+  const [connected, setConnected] = useState(false);
+
   return (
     <SocketProvider>
-      <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <Header />
-        <Box mt={5}>
-          <Gamepad />
-        </Box>
-      </ThemeProvider>
+      <ConnectedContext.Provider value={{ connected, setConnected }}>
+        <ThemeProvider theme={darkTheme}>
+          <CssBaseline />
+          <Header />
+          <Box mt={5}>
+            <Gamepad />
+          </Box>
+        </ThemeProvider>
+      </ConnectedContext.Provider>
     </SocketProvider>
   );
 }

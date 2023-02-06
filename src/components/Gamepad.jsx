@@ -13,6 +13,7 @@ import { useState, useEffect, useContext } from "react";
 import Joystick from "./Joystick";
 import InfoCard from "./InfoCard";
 import { SocketContext } from "./SocketProvider";
+import ConnectedContext from "./ConnectedContext";
 
 const Gamepad = ({}) => {
   const socket = useContext(SocketContext);
@@ -26,7 +27,11 @@ const Gamepad = ({}) => {
   });
   const [axes, setAxes] = useState([0, 0, 0, 0]);
   const [open, setOpen] = useState(false);
-  const [connected, setConnected] = useState(false);
+  const [connected, setConnectedLocal] = useState(false);
+
+  const { setConnected } = useContext(ConnectedContext);
+  const handleConnect = () => setConnected(true);
+  const handleDisconnect = () => setConnected(false);
 
   
 
@@ -94,11 +99,13 @@ const Gamepad = ({}) => {
   });
 
   socket.on("connect", () => {
-    setConnected(true);
+    setConnectedLocal(true);
+    handleConnect();
   });
 
   socket.on("disconnect", () => {
-    setConnected(false);
+    setConnectedLocal(false);
+    handleDisconnect();
   });
 
   return (

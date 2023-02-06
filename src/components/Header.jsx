@@ -7,9 +7,13 @@ import {
   PrecisionManufacturing,
 } from "@mui/icons-material";
 import { Box } from "@mui/system";
-import { useState, useEffect } from "react";
+import { useContext, useState } from "react";
+import { _ } from "lodash"
+import ConnectedContext from "./ConnectedContext";
 
 const Header = ({}) => {
+  const { connected } = useContext(ConnectedContext);
+  
   return (
     <AppBar
       position="static"
@@ -23,7 +27,7 @@ const Header = ({}) => {
           <Typography
             variant="h4"
             align="center"
-            color="info.dark"
+            color="orangered"
             fontWeight={"bold"}
           >
             Grunka Visualizer
@@ -43,7 +47,11 @@ const Header = ({}) => {
             flexGrow: 0,
           }}
         >
-          {true ? <CheckSharp color="success" /> : <ClearSharp color="error" />}
+          {connected ? (
+            <CheckSharp color="success" />
+          ) : (
+            <ClearSharp color="error" />
+          )}
         </Typography>
       </Toolbar>
     </AppBar>
