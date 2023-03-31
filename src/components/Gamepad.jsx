@@ -59,6 +59,7 @@ const Gamepad = ({}) => {
     joypad.set({
       axisMovementThreshold: 0.1,
     });
+    console.log(e)
 
     joypad.vibrate(gamepad, options);
 
@@ -83,9 +84,11 @@ const Gamepad = ({}) => {
 
   useEffect(() => {
     joypad.on("axis_move", (e) => {
+      console.log(e);
       const { axis, axisMovementValue, stickMoved } = e.detail;
+      const id = e.detail.gamepad.index;
 
-      sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue });
+      sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue, controller: id });
       setAxes(e.detail.gamepad.axes);
     });
   }, []);
