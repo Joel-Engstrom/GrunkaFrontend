@@ -87,8 +87,9 @@ const Gamepad = ({}) => {
       console.log(e);
       const { axis, axisMovementValue, stickMoved } = e.detail;
       const id = e.detail.gamepad.index;
+      const tempAxes = e.detail.gamepad.axes;
 
-      sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue, controller: id });
+      sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue, axes: tempAxes, controller: id });
       setAxes(e.detail.gamepad.axes);
     });
   }, []);
