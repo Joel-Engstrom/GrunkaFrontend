@@ -20,8 +20,16 @@ const Header = ({}) => {
       sx={{ minWidth: "90vw", margin: "0px", padding: "0px", flexGrow: 1 }}
     >
       <Toolbar sx={{ flexWrap: "wrap" }}>
-        <PrecisionManufacturing
-          sx={{ display: { xs: "none", md: "flex" }, mr: 1 }}
+      <Box
+        component="img"
+        sx={{
+          height: 233,
+          width: 350,
+          maxHeight: { xs: 40 },
+          maxWidth: { xs: 40 },
+        }}
+        alt="The house from the offer."
+        src="/public/favicon.webp"  
         />
         <Box flexGrow={1}>
           <Typography
@@ -30,7 +38,7 @@ const Header = ({}) => {
             color="orangered"
             fontWeight={"bold"}
           >
-            Grunka Visualizer
+            WALL-E VISION
           </Typography>
         </Box>
         <Typography

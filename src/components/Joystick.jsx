@@ -15,6 +15,7 @@ const Joystick = ({ x, y, title }) => {
             justifyContent: "center",
             flexDirection: "column",
             alignItems: "center",
+            padding: "15pt"
           }}
         >
           <Typography

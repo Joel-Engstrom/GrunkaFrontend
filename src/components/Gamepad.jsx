@@ -7,6 +7,7 @@ import {
   Stack,
   Skeleton,
   Card,
+  Typography,
 } from "@mui/material";
 import "joypad.js"; // ES6
 import { useState, useEffect, useContext } from "react";
@@ -25,15 +26,14 @@ const Gamepad = ({}) => {
     upperArm: 90,
     claw: 90,
   });
-  const [axes, setAxes] = useState([0, 0, 0, 0]);
+  const [controllerOneAxes, setControllerOneAxes] = useState([0, 0, 0, 0]);
+  const [controllerTwoAxes, setControllerTwoAxes] = useState([0, 0, 0, 0]);
   const [open, setOpen] = useState(false);
   const [connected, setConnectedLocal] = useState(false);
 
   const { setConnected } = useContext(ConnectedContext);
   const handleConnect = () => setConnected(true);
   const handleDisconnect = () => setConnected(false);
-
-  
 
   const handleClick = () => {
     setOpen(true);
@@ -59,7 +59,7 @@ const Gamepad = ({}) => {
     joypad.set({
       axisMovementThreshold: 0.1,
     });
-    console.log(e)
+    console.log(e);
 
     joypad.vibrate(gamepad, options);
 
@@ -89,8 +89,18 @@ const Gamepad = ({}) => {
       const id = e.detail.gamepad.index;
       const tempAxes = e.detail.gamepad.axes;
 
-      sendToSocket({ stick: stickMoved, axis: axis, value: axisMovementValue, axes: tempAxes, controller: id });
-      setAxes(e.detail.gamepad.axes);
+      sendToSocket({
+        stick: stickMoved,
+        axis: axis,
+        value: axisMovementValue,
+        axes: tempAxes,
+        controller: id,
+      });
+      if (id === 0) {
+        setControllerOneAxes(tempAxes);
+      } else if (id === 1) {
+        setControllerTwoAxes(tempAxes);
+      }
     });
   }, []);
 
@@ -167,9 +177,37 @@ const Gamepad = ({}) => {
       )}
 
       <Container>
-        <Stack direction="row" justifyContent="space-evenly" pt="50pt">
-          <Joystick x={axes[0]} y={axes[1]} title="Vänster Joystick" />
-          <Joystick x={axes[2]} y={axes[3]} title="Höger Joystick" />
+        <Stack direction="row" justifyContent="space-around">
+          <Stack direction="column" justifyContent="space-around" pt="20pt">
+            <Typography variant="h4">Förar'N</Typography>
+            <Stack direction="row" justifyContent="space-evenly">
+              <Joystick
+                x={controllerOneAxes[0]}
+                y={controllerOneAxes[1]}
+                title="Vänster"
+              />
+              <Joystick
+                x={controllerOneAxes[2]}
+                y={controllerOneAxes[3]}
+                title="Höger"
+              />
+            </Stack>
+          </Stack>
+          <Stack direction="column" justifyContent="space-around" pt="20pt">
+            <Typography variant="h4">Kloar'N</Typography>
+            <Stack direction="row" justifyContent="space-evenly">
+              <Joystick
+                x={controllerTwoAxes[0]}
+                y={controllerTwoAxes[1]}
+                title="Vänster"
+              />
+              <Joystick
+                x={controllerTwoAxes[2]}
+                y={controllerTwoAxes[3]}
+                title="Höger"
+              />
+            </Stack>
+          </Stack>
         </Stack>
       </Container>
 
