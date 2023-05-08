@@ -28,6 +28,7 @@ const Gamepad = ({}) => {
   });
   const [controllerOneAxes, setControllerOneAxes] = useState([0, 0, 0, 0]);
   const [controllerTwoAxes, setControllerTwoAxes] = useState([0, 0, 0, 0]);
+  const [controllerThreeAxes, setControllerThreeAxes] = useState([0, 0, 0, 0]);
   const [open, setOpen] = useState(false);
   const [connected, setConnectedLocal] = useState(false);
 
@@ -77,8 +78,8 @@ const Gamepad = ({}) => {
     joypad.on("button_press", (e) => {
       const { buttonName } = e.detail;
 
-      console.log(`${buttonName} was pressed!`);
-      sendToSocket(buttonName);
+      console.log(`${buttonName} was pressed by ${e.detail.gamepad.index}!`);
+      sendToSocket({data: buttonName, controller: e.detail.gamepad.index});
     });
   }, []);
 
@@ -100,6 +101,8 @@ const Gamepad = ({}) => {
         setControllerOneAxes(tempAxes);
       } else if (id === 1) {
         setControllerTwoAxes(tempAxes);
+      } else if (id === 2) {
+        setControllerThreeAxes(tempAxes);
       }
     });
   }, []);
@@ -204,6 +207,21 @@ const Gamepad = ({}) => {
               <Joystick
                 x={controllerTwoAxes[2]}
                 y={controllerTwoAxes[3]}
+                title="Höger"
+              />
+            </Stack>
+          </Stack>
+          <Stack direction="column" justifyContent="space-around" pt="20pt">
+            <Typography variant="h4">Tittar'N</Typography>
+            <Stack direction="row" justifyContent="space-evenly">
+              <Joystick
+                x={controllerThreeAxes[0]}
+                y={controllerThreeAxes[1]}
+                title="Vänster"
+              />
+              <Joystick
+                x={controllerThreeAxes[2]}
+                y={controllerThreeAxes[3]}
                 title="Höger"
               />
             </Stack>
