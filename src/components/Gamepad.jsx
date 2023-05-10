@@ -212,7 +212,7 @@ const Gamepad = ({}) => {
             </Stack>
           </Stack>
           <Stack direction="column" justifyContent="space-around" pt="20pt">
-            <Typography variant="h4">Tittar'N</Typography>
+            <Typography variant="h4">Kikar'N</Typography>
             <Stack direction="row" justifyContent="space-evenly">
               <Joystick
                 x={controllerThreeAxes[0]}
